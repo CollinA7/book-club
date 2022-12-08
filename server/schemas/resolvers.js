@@ -14,34 +14,49 @@ const resolvers = {
                 return userData
             }
             throw new AuthenticationError('Not logged in')
-        }
+        },
+        user: async (parent, { username }) => {
+            return User.findOne({ username })
+              .select('-__v -password')
+              .populate('friends')
+              .populate('thoughts');
+        },
     },
     Mutation: {
-        /*login: {
-            Accepts an email
-            password as parameters;
+        login: async ( parent, { email, password }) => {
+            // Accepts an email
+            const user = await User.findOne({ email });
+            // password as parameters;
+            if(!user) {
+                throw new AuthenticationError('Incorrect credentials');
+            }
 
-            returns an Auth type. 
-        }*/
+            const correctPw = await user.isCorrectPassword(password);
+
+            if (!correctPw) {
+                throw new AuthenticationError('Incorrect credentials');
+            }
+
+            const token = signToken(user);
+            return { token, user }
+        },
         
-        /*addUser: {
-            accepts username
-            email
-            password
+        addUser: async (parents, args) => {
+            const user = await User.create(args);
+            const token = signToken(user);
 
-            returns auth
-        } */
+            return { token, user };
+        },
 
-        /*saveBook: {
-            accepts books =[]
-            description
-            title
-            bookId
-            image
-            link
-        } */
 
-        /* */
+        // saveBook: async (parent, {}) {
+        //     // accepts books =[]
+        //     // description
+        //     // title
+        //     // bookId
+        //     // image
+        //     // link
+        // }
     },
 }
 

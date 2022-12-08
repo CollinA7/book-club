@@ -5,27 +5,46 @@ const typeDefs = gql`
         _id: ID
         username: String
         email: String
-        bookCount: {}
-        savedBooks: [Books]
+        bookCount: Int
+    }
+    
+    type Auth {
+        token: ID!
+        user: User
+    }
+
+    type Mutation {
+        login(email: String!, password: String!): Auth
+        addUser(username: String!, email: String!, password: String!): Auth
+    }
+
+    type Query {
+        me: User
+        user(username: String!): User
     }
 `;
+    
+// type Book {user(username: String!): User
+//     _id: ID
+//     authors: [String]
+//     description: String
+//     title: String
+//     image: String
+//     link: String
+// }
 
-//       Book type:
+//     bookId (Not the _id, but the book's id value returned from Google's Book API.)
+    
+//     title
 
-    //     bookId (Not the _id, but the book's id value returned from Google's Book API.)
+//     image
 
-    //     authors (An array of strings, as there may be more than one author.)
+//     link
 
-    //     description
+// Auth type:
 
-    //     title
+//     token
 
-    //     image
+//     user (References the User type.)
 
-    //     link
-
-    // Auth type:
-
-    //     token
-
-    //     user (References the User type.)
+module.exports = typeDefs;
